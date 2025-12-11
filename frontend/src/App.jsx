@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import MappingPage from "./Pages/MappingPage";
 import SellerUploadPage from "./Pages/SellerUploadPage";
@@ -14,11 +13,11 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <NavBar />
       <Routes>
-        {/* public */}
+        
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
 
-        {/* protected routes */}
+       
         <Route
           path="/marketplace-upload"
           element={
@@ -55,10 +54,10 @@ function App() {
           }
         />
 
-        {/* redirect base to home */}
+        
         <Route path="/" element={<Navigate to="/home" replace />} />
 
-        {/* fallback */}
+        
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </div>

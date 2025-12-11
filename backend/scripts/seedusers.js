@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import User from "../models/Users.js";   // FIXED: correct file name + extension
+import User from "../models/Users.js";  
 
 async function run() {
   await mongoose.connect(

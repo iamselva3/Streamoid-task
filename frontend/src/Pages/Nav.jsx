@@ -16,16 +16,14 @@ export default function NavBar() {
   // hide auth/profile UI on login page
   const isLoginPage = location.pathname === "/login";
 
-  // Track last visited path so login can redirect back
   useEffect(() => {
-    // don't store auth pages or static root
     const skip = ["/login", "/logout", "/favicon.ico"];
     if (!skip.includes(location.pathname)) {
       localStorage.setItem("lastVisited", location.pathname);
     }
   }, [location.pathname]);
 
-  // close dropdown on outside click
+ 
   useEffect(() => {
     function onDoc(e) {
       if (!dropdownRef.current) return;
@@ -50,31 +48,31 @@ export default function NavBar() {
   return (
     <nav className="w-full bg-white border-b shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Left */}
+        
         <div className="flex items-center gap-6">
           <Link to="/home" className="text-xl font-bold text-gray-900">
             Mapper
           </Link>
 
-          {/* role-based links */}
+        
           <div className="flex items-center gap-3">
             <Link to="/home" className="text-sm text-gray-600 hover:text-gray-900">Home</Link>
 
-            {/* Template page for admins */}
+           
             {isAdmin && (
               <Link to="/marketplace-upload" className="text-sm text-gray-600 hover:text-gray-900">
                 Template
               </Link>
             )}
 
-            {/* Seller upload available to seller and admin */}
+            
             {(isSeller || isAdmin) && (
               <Link to="/seller-upload" className="text-sm text-gray-600 hover:text-gray-900">
                 Upload
               </Link>
             )}
 
-            {/* Mapping (everyone who can map) */}
+           
             {(isSeller || isAdmin || isSuper) && (
               <Link to="/mapping" className="text-sm text-gray-600 hover:text-gray-900">
                 Map
@@ -87,14 +85,13 @@ export default function NavBar() {
 
         {/* Right */}
         <div className="flex items-center gap-4">
-          {/* Show login link when not authenticated */}
+        
           {!token && !isLoginPage && (
             <Link to="/login" className="px-3 py-1 text-sm text-white bg-blue-600 rounded">
               Login
             </Link>
           )}
 
-          {/* If authenticated and not on login page, show profile dropdown */}
           {token && !isLoginPage && (
             <div className="relative" ref={dropdownRef}>
               <button
@@ -123,7 +120,7 @@ export default function NavBar() {
                       Profile
                     </Link>
 
-                    {/* quick role-sensitive shortcuts */}
+                  
                     {isAdmin && (
                       <Link
                         to="/marketplace-upload"

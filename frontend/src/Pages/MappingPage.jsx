@@ -59,7 +59,7 @@ export default function MappingPage() {
       sellerFilename,
       sellerColumns,
       mapping,
-      sampleRows: [], // optionally fill if you have samples
+      sampleRows: [], 
       createdBy: "frontend-user",
     };
 

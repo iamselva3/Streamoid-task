@@ -1,12 +1,6 @@
-import Api from "./Api";   // your axios instance
-
+import Api from "./Api";   
 const BASE = import.meta.env.VITE_API_URL;
 
-// --------------------
-// Marketplace Template
-// --------------------
-
-// Upload marketplace template (CSV or JSON)
 export const uploadMarketplaceTemplate = async (formData) => {
   const response = await Api.post(
     `${BASE}/api/marketplaces`,
@@ -22,9 +16,6 @@ export const getAllMarketplaces = async () => {
   return response.data;
 };
 
-// --------------------
-// Seller File Upload
-// --------------------
 
 export const uploadSellerFile = async (formData) => {
   const response = await Api.post(
@@ -35,9 +26,6 @@ export const uploadSellerFile = async (formData) => {
   return response.data;  // { columns: [], sampleRows: [] }
 };
 
-// --------------------
-// Mapping Operations
-// --------------------
 
 // Save mapping
 export const saveMapping = async (data) => {

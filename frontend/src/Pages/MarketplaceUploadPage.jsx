@@ -8,13 +8,12 @@ export default function MarketplaceUploadPage() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  // Mutation for template upload
   const mutation = useMutation({
     mutationFn: async (formData) => uploadMarketplaceTemplate(formData),
     onSuccess: (data) => {
       alert("Marketplace template created!");
       console.log("Uploaded:", data);
-      navigate("/seller-upload"); // redirect after success
+      navigate("/seller-upload"); 
     },
     onError: (err) => {
       console.error(err);
@@ -41,7 +40,6 @@ export default function MarketplaceUploadPage() {
         Create Marketplace Template
       </h2>
 
-      {/* Template Name */}
       <div className="mb-5">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Template Name (optional)
@@ -55,7 +53,6 @@ export default function MarketplaceUploadPage() {
         />
       </div>
 
-      {/* File Upload */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Upload CSV Template
@@ -68,7 +65,6 @@ export default function MarketplaceUploadPage() {
         />
       </div>
 
-      {/* Upload Button */}
       <button
         onClick={handleUpload}
         disabled={mutation.isLoading}
@@ -77,7 +73,7 @@ export default function MarketplaceUploadPage() {
         {mutation.isLoading ? "Uploading…" : "Upload Template"}
       </button>
 
-      {/* Navigation */}
+     
       <div className="mt-6 text-center">
         <a href="/seller-upload" className="text-blue-600 hover:underline text-sm">
           Next → Upload Seller File
