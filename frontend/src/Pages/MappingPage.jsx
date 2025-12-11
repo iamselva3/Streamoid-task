@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getAllMarketplaces, saveMapping } from "../endpoint";
-// import { getAllMarketplaces, saveMapping as apiSaveMapping } from "../mappingApi"; // adjust path
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function MappingPage() {
   const queryClient = useQueryClient();
@@ -15,43 +17,49 @@ export default function MappingPage() {
   const [selectedId, setSelectedId] = useState("");
   const [attributes, setAttributes] = useState([]);
   const [mapping, setMapping] = useState({});
+  const [confirmSaveWithoutMapping, setConfirmSaveWithoutMapping] = useState(false);
 
-  // fetch marketplaces
   const { data: marketplaces = [], isLoading, isError, error } = useQuery({
     queryKey: ["marketplaces"],
     queryFn: getAllMarketplaces,
     staleTime: 1000 * 60 * 5,
   });
 
-  // save mapping mutation
   const mutation = useMutation({
     mutationFn: saveMapping,
     onSuccess: (data) => {
       queryClient.invalidateQueries(["mappings"]);
-      alert("Mapping saved!");
-      navigate("/mappings");
+      toast.success("Mapping saved!", { autoClose: 1400 });
+      setTimeout(() => navigate("/mappings"), 1400);
     },
     onError: (err) => {
       console.error("Save mapping error:", err);
-      alert("Failed to save mapping: " + (err?.message || "unknown"));
+      toast.error("Failed to save mapping: " + (err?.message || "unknown"), { autoClose: 3000 });
     },
   });
 
-  // when marketplace selection changes, load attributes and reset mapping
   useEffect(() => {
     const mp = marketplaces.find((m) => m._id === selectedId);
     setAttributes(mp?.attributes || []);
     setMapping({});
+    setConfirmSaveWithoutMapping(false);
   }, [selectedId, marketplaces]);
 
   const handleSave = () => {
     if (!selectedId) {
-      alert("Select marketplace first!");
+      toast.warning("Select marketplace first!", { autoClose: 2000 });
       return;
     }
+
     // basic validation: at least one mapping required
     if (Object.keys(mapping).length === 0) {
-      if (!confirm("You haven't mapped any attributes. Save anyway?")) return;
+      if (!confirmSaveWithoutMapping) {
+        setConfirmSaveWithoutMapping(true);
+        toast.info("You haven't mapped any attributes. Click Save again to confirm saving without mappings.", { autoClose: 3500 });
+        return;
+      }
+      // if user already confirmed once, proceed and reset the flag
+      setConfirmSaveWithoutMapping(false);
     }
 
     const body = {
@@ -59,7 +67,7 @@ export default function MappingPage() {
       sellerFilename,
       sellerColumns,
       mapping,
-      sampleRows: [], 
+      sampleRows: [],
       createdBy: "frontend-user",
     };
 
@@ -80,6 +88,8 @@ export default function MappingPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <ToastContainer />
+
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-900">Map Seller Columns → Marketplace Attributes</h2>
         <p className="text-sm text-gray-600 mt-1">
@@ -87,7 +97,6 @@ export default function MappingPage() {
         </p>
       </div>
 
-      {/* Marketplace Dropdown */}
       <div className="mb-6">
         <label htmlFor="marketplace" className="block text-sm font-medium text-gray-700 mb-2">
           Choose Marketplace
@@ -107,7 +116,6 @@ export default function MappingPage() {
         </select>
       </div>
 
-      {/* Mapping UI */}
       {attributes.length > 0 ? (
         <div className="space-y-4">
           <div className="bg-white rounded-lg shadow border p-4">
@@ -149,7 +157,6 @@ export default function MappingPage() {
             </div>
           </div>
 
-          {/* Mapping preview */}
           <div className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium">Current mapping preview</span>
@@ -185,7 +192,6 @@ export default function MappingPage() {
             )}
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 items-center">
             <button
               onClick={handleSave}

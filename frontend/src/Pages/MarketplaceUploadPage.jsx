@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";// adjust path
+import { useNavigate } from "react-router-dom";
 import { uploadMarketplaceTemplate } from "../endpoint.js";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function MarketplaceUploadPage() {
   const [file, setFile] = useState(null);
@@ -11,19 +14,20 @@ export default function MarketplaceUploadPage() {
   const mutation = useMutation({
     mutationFn: async (formData) => uploadMarketplaceTemplate(formData),
     onSuccess: (data) => {
-      alert("Marketplace template created!");
+      toast.success("Marketplace template created!", { autoClose: 1500 });
       console.log("Uploaded:", data);
-      navigate("/seller-upload"); 
+
+      setTimeout(() => navigate("/seller-upload"), 1500);
     },
     onError: (err) => {
       console.error(err);
-      alert("Upload failed: " + (err.message || "unknown error"));
+      toast.error("Upload failed: " + (err.message || "unknown error"));
     },
   });
 
   const handleUpload = () => {
     if (!file && !name) {
-      alert("Provide a template name or upload a CSV file!");
+      toast.warning("Provide a template name or upload a CSV file!");
       return;
     }
 
@@ -36,6 +40,8 @@ export default function MarketplaceUploadPage() {
 
   return (
     <div className="max-w-xl mx-auto p-6">
+      <ToastContainer />
+
       <h2 className="text-2xl font-semibold text-gray-900 mb-6">
         Create Marketplace Template
       </h2>
@@ -73,7 +79,6 @@ export default function MarketplaceUploadPage() {
         {mutation.isLoading ? "Uploading…" : "Upload Template"}
       </button>
 
-     
       <div className="mt-6 text-center">
         <a href="/seller-upload" className="text-blue-600 hover:underline text-sm">
           Next → Upload Seller File
